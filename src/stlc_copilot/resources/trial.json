@@ -1,0 +1,20 @@
+{
+  "feature": "Insurance Claim Tracking",
+  "scenarios": [
+    {
+      "name": "Real-time claim status updates",
+      "description": "As a customer, I want to view the real-time status of my insurance claim.",
+      "steps": "Given I am logged into my account\nWhen I navigate to the claims tracking section\nThen I should see the current status of my claim"
+    },
+    {
+      "name": "Access related documents",
+      "description": "As a customer, I want to access documents related to my insurance claim.",
+      "steps": "Given I am viewing my insurance claim details\nWhen I click on the 'Related Documents' section\nThen I should see all documents associated with my claim"
+    },
+    {
+      "name": "Direct communication with insurer",
+      "description": "As a customer, I want to be able to communicate directly with my insurer about my claim.",
+      "steps": "Given I am viewing my claim details\nWhen I click on 'Contact Insurer'\nThen I should be able to send a message directly to my insurer"
+    }
+  ]
+}

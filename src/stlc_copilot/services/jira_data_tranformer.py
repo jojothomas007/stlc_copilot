@@ -18,9 +18,9 @@ class JiraDataTransformer:
     def format_user_stories(self, json_userstories:json, epic_id:str):
         issue_dto_list = []
         for json_userstory in json_userstories:
-            project = jira_issue_dto.Project(key=self.project_key)
+            project = jira_issue_dto.Project(id=None, key=self.project_key)
             parent = jira_issue_dto.Parent(id=epic_id)
-            issue_type = jira_issue_dto.IssueType(id=self.story_issue_type_id)
+            issue_type = jira_issue_dto.IssueType(id=self.story_issue_type_id, name=None)
             fields = jira_issue_dto.Fields(
                 project=project,
                 summary=json_userstory["summary"],
@@ -28,19 +28,18 @@ class JiraDataTransformer:
                 issuetype=issue_type,
                 parent=parent
             )
-            jira_issue = jira_issue_dto.Issue(fields=fields)
-            issue_dto_list.append(jira_issue)
-        
-        jira_issue_bulk_dto = jira_issue_dto.JiraIssueBulk(issueUpdates=issue_dto_list)
+            bulk_issue_fields = jira_issue_dto.BulkIssueFields(fields=fields)
+            issue_dto_list.append(bulk_issue_fields)
+        jira_issue_bulk_dto = jira_issue_dto.BulkIssues(issueUpdates=issue_dto_list)
         request_body = jira_issue_bulk_dto.model_dump_json()
         return request_body
 
-    def format_testcases(self, json_userstories, epic_id):
+    def format_testcases_with_tables(self, json_userstories, epic_id):
         issue_dto_list = []
         for json_userstory in json_userstories:
-            project = jira_issue_dto.Project(key=self.project_key)
+            project = jira_issue_dto.Project(id=None, key=self.project_key)
             parent = jira_issue_dto.Parent(id=epic_id)
-            issue_type = jira_issue_dto.IssueType(id=self.test_issue_type_id)
+            issue_type = jira_issue_dto.IssueType(id=self.test_issue_type_id, name=None)
             testcase_steps = json_userstory["description"]
             description = f"Precondition: {testcase_steps['precondition']} \n||*Step No*||*Test Steps*||*Expected*||"
             for testcase_step in testcase_steps["steps"]:
@@ -52,21 +51,47 @@ class JiraDataTransformer:
                 issuetype=issue_type,
                 parent=parent
             )
-            jira_issue = jira_issue_dto.Issue(fields=fields)
-            issue_dto_list.append(jira_issue)
-        jira_issue_bulk_dto = jira_issue_dto.JiraIssueBulk(issueUpdates=issue_dto_list)
+            bulk_issue_fields = jira_issue_dto.BulkIssueFields(fields=fields)
+            issue_dto_list.append(bulk_issue_fields)
+        jira_issue_bulk_dto = jira_issue_dto.BulkIssues(issueUpdates=issue_dto_list)
         request_body = jira_issue_bulk_dto.model_dump_json()
         return request_body
 
-    def format_basic_testcases(self, json_userstories, epicId):
+    def format_testcases_basic(self, json_testcases, epic_id):
             issue_dto_list = []
-            for json_userstory in json_userstories:
-                project = jira_issue_dto.Project(self.projectKey)
-                parent = jira_issue_dto.Parent(epicId)
-                issue_type = jira_issue_dto.IssueType(self.testIssueTypeId)
-                fields = jira_issue_dto.Fields(project, json_userstory["summary"], json_userstory["description"], issue_type, parent)
-                jira_issue = jira_issue_dto(fields)
-                issue_dto_list.append(jira_issue)
-            jira_issue_bulk_dto = jira_issue_dto.JiraIssueBulk(issue_dto_list)
+            for json_testcase in json_testcases:
+                project = jira_issue_dto.Project(id=None, key=self.project_key)
+                parent = jira_issue_dto.Parent(id=epic_id)
+                issue_type = jira_issue_dto.IssueType(id=self.test_issue_type_id, name=None)
+                fields = jira_issue_dto.Fields(
+                    project=project, 
+                    summary=json_testcase["summary"], 
+                    description=json_testcase["description"], 
+                    issuetype=issue_type,
+                    parent=parent
+                )
+                bulk_issue_fields = jira_issue_dto.BulkIssueFields(fields=fields)
+                issue_dto_list.append(bulk_issue_fields)
+            jira_issue_bulk_dto = jira_issue_dto.BulkIssues(issueUpdates=issue_dto_list)
             request_body = jira_issue_bulk_dto.model_dump_json()
             return request_body
+    
+    def format_testcases_bdd(self, json_scenarios, epic_id):
+            issue_dto_list = []
+            for json_scenario in json_scenarios["scenarios"]:
+                project = jira_issue_dto.Project(id=None, key=self.project_key)
+                parent = jira_issue_dto.Parent(id=epic_id)
+                issue_type = jira_issue_dto.IssueType(id=self.test_issue_type_id, name=None)
+                fields = jira_issue_dto.Fields(
+                    project=project, 
+                    summary=json_scenario["name"],
+                    description=f"{json_scenario["description"]}\n{json_scenario["steps"]}",
+                    issuetype=issue_type,
+                    parent=parent
+                )
+                bulk_issue_fields = jira_issue_dto.BulkIssueFields(fields=fields)
+                issue_dto_list.append(bulk_issue_fields)
+            jira_issue_bulk_dto = jira_issue_dto.BulkIssues(issueUpdates=issue_dto_list)
+            request_body = jira_issue_bulk_dto.model_dump_json()
+            return request_body
+

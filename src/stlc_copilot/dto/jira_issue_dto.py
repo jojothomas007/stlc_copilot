@@ -11,7 +11,7 @@ class Content(BaseModel):
     content: List[InnerContent]
 
 class Project(BaseModel):
-    id: str
+    id: Optional[str]
     key: str
 
 class Parent(BaseModel):
@@ -19,7 +19,7 @@ class Parent(BaseModel):
 
 class IssueType(BaseModel):
     id: str
-    name: str
+    name: Optional[str]
 
 class Fields(BaseModel):
     project: Project
@@ -31,11 +31,13 @@ class Fields(BaseModel):
 class Issue(BaseModel):
     id: str
     key: str
-    fields: Fields
-    
+    fields: Fields    
 
     def toJson(self):
-        return self.json()
+        return self.model_dump_json()
 
-class JiraIssueBulk(BaseModel):
-    issueUpdates: List[Issue]
+class BulkIssueFields(BaseModel):
+    fields: Fields    
+
+class BulkIssues(BaseModel):
+    issueUpdates: List[BulkIssueFields]

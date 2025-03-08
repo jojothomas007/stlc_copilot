@@ -1,5 +1,6 @@
 import logging
 
+from src.stlc_copilot.config import Config
 from src.stlc_copilot.dto.jira_issue_dto import Issue
 from src.stlc_copilot.services.jira_service import JiraService
 from src.stlc_copilot.services.json_fixer import JsonFixerService
@@ -18,11 +19,13 @@ class EventRouterService:
         self.jira_data_transformer = JiraDataTransformer()
     
     def route_event(self, issue: Issue):
-            issue_type = issue.fields.issuetype.name
-            if issue_type == "Epic":
+            issue_type = issue.fields.issuetype.id
+            if issue_type == Config.jira_epic_issuetypeid:
                 self.__handle_epic_update(issue)
-            elif issue_type == "Story":
+            elif issue_type == Config.jira_story_issuetypeid:
                 self.__handle_user_story_update(issue)
+            elif issue_type == Config.jira_test_issuetypeid:
+                self.__handle_test_update(issue)
             else:
                 logger.error(f"Unsupported issue type: {issue_type}")
 
@@ -34,7 +37,7 @@ class EventRouterService:
             try:
                 llm_output = self.llm_service.generate_user_stories(f"epicSummary:{epic_summary};epicDescription:{epic_description}")
                 logger.info("LLM Generated raw output: %s", llm_output)
-                json_user_stories = self.json_fixer_service.fix_user_story_json(llm_output)
+                json_user_stories = self.json_fixer_service.fix_json_format(llm_output)
                 user_stories_payloads = self.jira_data_transformer.format_user_stories(json_user_stories, epic_id)
             except Exception as e:
                 logger.error(e)
@@ -46,12 +49,44 @@ class EventRouterService:
                 epic_id = issue.fields.parent.id
                 user_story_summary = issue.fields.summary
                 user_story_description = issue.fields.description
-                llm_output = self.llm_service.generate_test_scenarios(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
-                logger.info(f"LLM Generated raw output: {llm_output}")
-                json_tests = self.json_fixer_service.fix_test_case_json(llm_output)
-                logger.info(f"Fixed json: {json_tests}")
-                # Assuming format_basic_testcases method
-                tests_payloads = self.jira_data_transformer.format_basic_testcases(json_tests, epic_id)
+                if "bdd" == Config.test_generation_type:
+                    llm_output = self.llm_service.generate_test_scenarios_bdd(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
+                    logger.info(f"LLM Generated raw output: {llm_output}")
+                    json_tests = self.json_fixer_service.fix_json_format(llm_output)
+                    logger.info(f"Fixed json: {json_tests}")
+                    # Assuming format_basic_testcases method
+                    tests_payloads = self.jira_data_transformer.format_testcases_bdd(json_tests, epic_id)
+                else:
+                    llm_output = self.llm_service.generate_test_scenarios_basic(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
+                    logger.info(f"LLM Generated raw output: {llm_output}")
+                    json_tests = self.json_fixer_service.fix_json_format(llm_output)
+                    logger.info(f"Fixed json: {json_tests}")
+                    # Assuming format_basic_testcases method
+                    tests_payloads = self.jira_data_transformer.format_testcases_basic(json_tests, epic_id)                
+            except Exception as e:
+                logger.error(e)
+                return
+            self.jira_service.create_issues_bulk(tests_payloads)
+
+    def __handle_test_update(self, issue: Issue):
+            try:
+                epic_id = issue.fields.parent.id
+                user_story_summary = issue.fields.summary
+                user_story_description = issue.fields.description
+                if "bdd" == Config.test_generation_type:
+                    llm_output = self.llm_service.generate_test_scenarios_bdd(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
+                    logger.info(f"LLM Generated raw output: {llm_output}")
+                    json_tests = self.json_fixer_service.fix_json_format(llm_output)
+                    logger.info(f"Fixed json: {json_tests}")
+                    # Assuming format_basic_testcases method
+                    tests_payloads = self.jira_data_transformer.format_testcases_bdd(json_tests, epic_id)
+                else:
+                    llm_output = self.llm_service.generate_test_scenarios_basic(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
+                    logger.info(f"LLM Generated raw output: {llm_output}")
+                    json_tests = self.json_fixer_service.fix_json_format(llm_output)
+                    logger.info(f"Fixed json: {json_tests}")
+                    # Assuming format_basic_testcases method
+                    tests_payloads = self.jira_data_transformer.format_testcases_basic(json_tests, epic_id)                
             except Exception as e:
                 logger.error(e)
                 return

@@ -2,7 +2,8 @@ from typing import Union
 from fastapi import FastAPI, Request
 import json
 import logging
-from src.stlc_copilot.dto.webhook_dto import WebhookIssue, Issue
+from src.stlc_copilot.services.jira_data_tranformer import JiraDataTransformer
+from src.stlc_copilot.dto.webhook_dto import WebhookIssue
 from src.stlc_copilot.services.event_router import EventRouterService
 
 # Set up logging
@@ -21,6 +22,8 @@ async def shutdown_event():
 
 @app.get("/")
 def isAlive():
+    payload = json.load(open('src/stlc_copilot/resources/trial.json', 'r'))
+    JiraDataTransformer().format_testcases_bdd(payload, "10004") 
     return "STLC Copilot is active"
 
 @app.post("/webhook")

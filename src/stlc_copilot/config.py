@@ -14,4 +14,5 @@ class Config:
     jira_epic_issuetypeid: int = os.environ["jira_epic_issuetypeid"]
     jira_story_issuetypeid: int = os.environ["jira_story_issuetypeid"]
     jira_test_issuetypeid: int = os.environ["jira_test_issuetypeid"]
+    test_generation_type: int = os.environ["test_generation_type"]
 
