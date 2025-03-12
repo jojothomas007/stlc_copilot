@@ -7,7 +7,7 @@ name: Build and deploy Python app to Azure Web App - stlc-copilot
 on:
   push:
     branches:
-      - main
+      - poetry
   workflow_dispatch:
 
 jobs:
