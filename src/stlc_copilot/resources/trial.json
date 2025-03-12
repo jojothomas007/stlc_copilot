@@ -1,20 +1,36 @@
 {
-  "feature": "Insurance Claim Tracking",
-  "scenarios": [
-    {
-      "name": "Real-time claim status updates",
-      "description": "As a customer, I want to view the real-time status of my insurance claim.",
-      "steps": "Given I am logged into my account\nWhen I navigate to the claims tracking section\nThen I should see the current status of my claim"
-    },
-    {
-      "name": "Access related documents",
-      "description": "As a customer, I want to access documents related to my insurance claim.",
-      "steps": "Given I am viewing my insurance claim details\nWhen I click on the 'Related Documents' section\nThen I should see all documents associated with my claim"
-    },
-    {
-      "name": "Direct communication with insurer",
-      "description": "As a customer, I want to be able to communicate directly with my insurer about my claim.",
-      "steps": "Given I am viewing my claim details\nWhen I click on 'Contact Insurer'\nThen I should be able to send a message directly to my insurer"
-    }
-  ]
+  "login": "jojothomas007",
+  "id": 39621685,
+  "node_id": "MDQ6VXNlcjM5NjIxNjg1",
+  "avatar_url": "https://avatars.githubusercontent.com/u/39621685?v=4",
+  "gravatar_id": "",
+  "url": "https://api.github.com/users/jojothomas007",
+  "html_url": "https://github.com/jojothomas007",
+  "followers_url": "https://api.github.com/users/jojothomas007/followers",
+  "following_url": "https://api.github.com/users/jojothomas007/following{/other_user}",
+  "gists_url": "https://api.github.com/users/jojothomas007/gists{/gist_id}",
+  "starred_url": "https://api.github.com/users/jojothomas007/starred{/owner}{/repo}",
+  "subscriptions_url": "https://api.github.com/users/jojothomas007/subscriptions",
+  "organizations_url": "https://api.github.com/users/jojothomas007/orgs",
+  "repos_url": "https://api.github.com/users/jojothomas007/repos",
+  "events_url": "https://api.github.com/users/jojothomas007/events{/privacy}",
+  "received_events_url": "https://api.github.com/users/jojothomas007/received_events",
+  "type": "User",
+  "user_view_type": "public",
+  "site_admin": false,
+  "name": null,
+  "company": null,
+  "blog": "",
+  "location": null,
+  "email": null,
+  "hireable": null,
+  "bio": null,
+  "twitter_username": null,
+  "notification_email": null,
+  "public_repos": 16,
+  "public_gists": 0,
+  "followers": 0,
+  "following": 1,
+  "created_at": "2018-05-25T11:15:04Z",
+  "updated_at": "2025-02-20T18:04:33Z"
 }

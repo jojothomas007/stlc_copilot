@@ -1,11 +1,15 @@
 import logging
 
+import json
+from src.stlc_copilot.dto.jira_user_dto import User
+from src.stlc_copilot.dto.github_branch_dto import Branch
 from src.stlc_copilot.config import Config
-from src.stlc_copilot.dto.jira_issue_dto import Issue
+from src.stlc_copilot.dto.jira_issue_dto import Issue, IssueLink, IssueLinkType, IssueToLink, BulkIssues
 from src.stlc_copilot.services.jira_service import JiraService
 from src.stlc_copilot.services.json_fixer import JsonFixerService
 from src.stlc_copilot.services.jira_data_tranformer import JiraDataTransformer
 from src.stlc_copilot.services.gpt_llm_service import GPTService
+from src.stlc_copilot.services.github_service import GithubService
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -17,6 +21,7 @@ class EventRouterService:
         self.llm_service = GPTService()
         self.json_fixer_service = JsonFixerService(self.jira_service, self.llm_service)
         self.jira_data_transformer = JiraDataTransformer()
+        self.github_service = GithubService()
     
     def route_event(self, issue: Issue):
             issue_type = issue.fields.issuetype.id
@@ -55,39 +60,59 @@ class EventRouterService:
                     json_tests = self.json_fixer_service.fix_json_format(llm_output)
                     logger.info(f"Fixed json: {json_tests}")
                     # Assuming format_basic_testcases method
-                    tests_payloads = self.jira_data_transformer.format_testcases_bdd(json_tests, epic_id)
+                    bulk_issues_dto:BulkIssues = self.jira_data_transformer.get_issue_bulk_dto_bdd(json_tests, epic_id)
                 else:
                     llm_output = self.llm_service.generate_test_scenarios_basic(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
                     logger.info(f"LLM Generated raw output: {llm_output}")
                     json_tests = self.json_fixer_service.fix_json_format(llm_output)
                     logger.info(f"Fixed json: {json_tests}")
                     # Assuming format_basic_testcases method
-                    tests_payloads = self.jira_data_transformer.format_testcases_basic(json_tests, epic_id)                
-            except Exception as e:
-                logger.error(e)
-                return
-            self.jira_service.create_issues_bulk(tests_payloads)
-
+                    bulk_issues_dto:BulkIssues = self.jira_data_transformer.get_issue_bulk_dto_basic(json_tests, epic_id)                
+                response = self.jira_service.create_issues_bulk(bulk_issues_dto)
+                self.__link_tests_to_userstory(response["issues"], issue.key)
+            except Exception as err:
+                logger.error(f"An unexpected error occurred: {err}")
+            return None           
+           
+    def __link_tests_to_userstory(self, issues: json, user_story_key:str):
+        for issue in issues:
+            issue_link = IssueLink(
+                inwardIssue=IssueToLink(key=issue["key"]),
+                outwardIssue=IssueToLink(key=user_story_key),
+                type=IssueLinkType(name=Config.jira_test_linktype_name)
+            )
+            self.jira_service.create_issue_link(issue_link)
+    
     def __handle_test_update(self, issue: Issue):
             try:
                 epic_id = issue.fields.parent.id
-                user_story_summary = issue.fields.summary
-                user_story_description = issue.fields.description
-                if "bdd" == Config.test_generation_type:
-                    llm_output = self.llm_service.generate_test_scenarios_bdd(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
-                    logger.info(f"LLM Generated raw output: {llm_output}")
-                    json_tests = self.json_fixer_service.fix_json_format(llm_output)
-                    logger.info(f"Fixed json: {json_tests}")
-                    # Assuming format_basic_testcases method
-                    tests_payloads = self.jira_data_transformer.format_testcases_bdd(json_tests, epic_id)
+                test_summary = issue.fields.summary
+                test_description = issue.fields.description
+                test_type:str = Config.test_generation_type
+                if "bdd" == test_type:
+                    linked_userstory_key = self.jira_data_transformer.get_linked_userstory_key(issue)
+                    files_dict:dict = self.jira_data_transformer.get_feature_file(linked_userstory_key)
+                    branch_name = f"{linked_userstory_key}_tests"
+                    base_branch:Branch = self.github_service.get_branch(Config.github_base_branch)
+                    self.github_service.create_branch(branch_name, base_branch.commit.sha)
+                    jira_user:User = self.jira_service.get_current_user()
+                    for file in files_dict:
+                        self.github_service.create_update_file_contents(
+                            f"{Config.github_target_path}/{file}", 
+                            branch_name, 
+                            files_dict[file], 
+                            f"feature file added for {linked_userstory_key}",
+                            jira_user.displayName,
+                            jira_user.emailAddress
+                        )
+                    self.github_service.create_pull_request(
+                        branch_name,
+                        Config.github_base_branch,
+                        f"feature file for {linked_userstory_key}",
+                        f"feature file for {linked_userstory_key}"
+                    )
                 else:
-                    llm_output = self.llm_service.generate_test_scenarios_basic(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
-                    logger.info(f"LLM Generated raw output: {llm_output}")
-                    json_tests = self.json_fixer_service.fix_json_format(llm_output)
-                    logger.info(f"Fixed json: {json_tests}")
-                    # Assuming format_basic_testcases method
-                    tests_payloads = self.jira_data_transformer.format_testcases_basic(json_tests, epic_id)                
-            except Exception as e:
-                logger.error(e)
-                return
-            self.jira_service.create_issues_bulk(tests_payloads)
+                    logger.warning(f"Code generation not supported for tests type: {test_type}")             
+            except Exception as err:
+                logger.error(f"An unexpected error occurred: {err}")
+            return None

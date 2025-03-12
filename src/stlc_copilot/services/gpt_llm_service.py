@@ -26,15 +26,8 @@ class GPTService:
         return self.generate_text(user_story_details, "Generate bdd Test cases from the above User story details. Generated Output must be in the json array in the format :{\"feature\":\"Feature name in less than 80 characters\",\"scenario\":\"Detailed testcase steps\"}")
     
     def generate_test_scenarios_bdd(self, user_story_details):
-        expected_json_format:json={
-        "feature": "Feature name in less than 50 characters",
-        "scenarios": [
-        {
-            "name": "Scenario name in less than 80 characters",
-            "description": "Scenario description in less than 200 characters",
-            "steps": "All Scenario steps formatted and each in new line"
-        }]}
-        return self.generate_text(user_story_details, f"Generate bdd testcases from below userstory description. Generated Output must be in the json format : {expected_json_format}")
+        expected_json_format:json={"feature": "Feature name and details", "scenarios": [{"scenario": "Scenario details"}]}
+        return self.generate_text(user_story_details, f"Generate a feature file in Gherkins format executed in Cucumber Test Framework for the below user story. Generated Output must be in the json format : {expected_json_format}")
 
     def generate_text(self, user_prompt, system_prompt):
         logger.info(f"Generating text for prompt: {system_prompt} {user_prompt}")

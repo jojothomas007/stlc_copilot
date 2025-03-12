@@ -1,0 +1,27 @@
+{
+  "issueUpdates": [
+    {
+      "fields": {
+        "project": {
+          "key": "SCRUM"
+        },
+        "summary": "Verify real-time claim status updates",
+        "description": "1. Log in to the mobile app or online portal. 2. Navigate to the claims tracking section. 3. Check for the status of the submitted claim. 4. Confirm that the status is updated in real-time according to the latest information.",
+        "issuetype": {
+          "id": "10001"
+        },
+        "parent": {
+          "id": "10008"
+        },
+        "issuelinks": [{
+          "type": {
+            "id": "10007"
+          },
+          "outwardIssue": {
+            "key": "SCRUM-23"
+          }
+        }]
+      }
+    }
+  ]
+}

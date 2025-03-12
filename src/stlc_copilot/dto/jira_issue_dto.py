@@ -1,6 +1,5 @@
 from typing import List, Optional
 from pydantic import BaseModel
-import json
 
 class InnerContent(BaseModel):
     type: str
@@ -21,12 +20,29 @@ class IssueType(BaseModel):
     id: str
     name: Optional[str]
 
+class Creator(BaseModel):
+    accountId: str
+    displayName: str
+
+class IssueLinkType(BaseModel):
+    name: str
+
+class IssueToLink(BaseModel):
+    key: str
+
+class IssueLink(BaseModel):
+    inwardIssue: Optional[IssueToLink] = None
+    outwardIssue: Optional[IssueToLink] = None
+    type: IssueLinkType
+
 class Fields(BaseModel):
     project: Project
     summary: str
     description: str
     issuetype: IssueType
     parent: Optional[Parent] = None  # Parent is now optional
+    creator: Optional[Creator] = None
+    issuelinks:Optional[List[IssueLink]] = None
 
 class Issue(BaseModel):
     id: str
