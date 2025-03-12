@@ -13,6 +13,38 @@ Install packages: poetry add package_name
 <!-- For Bringing up the server -->
 poetry run uvicorn src.stlc_copilot.main:app --reload
 
+JIRA API
+********
+https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-links/#api-rest-api-3-issuelink-post
+
+XRAY API
+********
+https://docs.getxray.app/display/XRAYCLOUD/Exporting+Cucumber+Tests+-+REST+v2
+
+Get XRAY API credentials
+https://docs.getxray.app/display/XRAYCLOUD/Global+Settings%3A+API+Keys
+
+
+GITHUB API
+**********
+https://docs.github.com/en/rest/using-the-rest-api/getting-started-with-the-rest-api?apiVersion=2022-11-28&tool=curl
+
+Get Branch
+https://docs.github.com/en/rest/branches/branches?apiVersion=2022-11-28#get-a-branch
+curl -L -H "User-Agent: stlc_copilot" -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ghp_token" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/jojothomas007/cucumber-java/branches/test1
+
+create branch
+https://docs.github.com/en/rest/git/refs?apiVersion=2022-11-28#create-a-reference
+curl -L -X POST -H "User-Agent: stlc_copilot" -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ghp_token" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/jojothomas007/cucumber-java/git/refs -d "{\"ref\":\"refs/heads/featureA\",\"sha\":\"ef32440eecc86b82400d8ba0bc6601ead904888c\"}"
+
+create-or-update-file-contents
+https://docs.github.com/en/rest/repos/contents?apiVersion=2022-11-28#create-or-update-file-contents
+curl -L -X PUT -H "User-Agent: stlc_copilot" -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ghp_token" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/jojothomas007/cucumber-java/contents/src/new_file.txt -d "{\"message\":\"Commit message\",\"committer\":{\"name\":\"Jojo Thomas\",\"email\":\"jojothomas007@gmail.com\"},\"content\":\"bXkgbmV3IGZpbGUgY29udGVudHM=\",\"branch\":\"test1\"}"
+
+create pull request
+https://docs.github.com/en/rest/pulls/pulls?apiVersion=2022-11-28#create-a-pull-request
+curl -L -X POST -H "User-Agent: stlc_copilot" -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ghp_token" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/jojothomas007/cucumber-java/pulls -d "{\"title\":\"Amazing new feature\",\"body\":\"Please pull these awesome changes in!\",\"head\":\"test1\",\"base\":\"main\"}"
+
 
 https://github.com/Python-World/python-mini-projects/tree/master
 
