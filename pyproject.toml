@@ -1,9 +1,9 @@
 [project]
 name = "stlc-copilot"
 version = "0.1.0"
-description = ""
+description = "automate stlc"
 authors = [
-    {name = "testName",email = "test@gmail.com"}
+    {name = "Jojo Thomas",email = "jojothomas007@gmail.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.12,<4.0"
