@@ -25,12 +25,12 @@ jobs:
           python-version: '3.12'
 
       - name: Set up Poetry
-        uses: snok/install-poetry@v1.2.0
+        uses: snok/install-poetry@v1.4.1
         with:
           version: 2.1.1 # Or your preferred version
 
       - name: Configure Poetry
-        run: poetry config virtualenvs.in-project true
+        run: poetry config virtualenvs.in-project false
 
       - name: Install dependencies
         run: |
