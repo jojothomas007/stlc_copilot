@@ -24,13 +24,17 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Create and start virtual environment
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-      
+      - name: Set up Poetry
+        uses: snok/install-poetry@v1
+        with:
+          version: 2.1.1 # Or your preferred version
+
+      - name: Configure Poetry
+        run: poetry config virtualenvs.in-project true
+
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          poetry install --no-interaction --no-ansi
         
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
