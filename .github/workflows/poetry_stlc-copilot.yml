@@ -30,7 +30,7 @@ jobs:
           version: 1.8.5 # Or your preferred version
 
       - name: Configure Poetry
-        run: poetry config virtualenvs.in-project true
+        run: poetry config virtualenvs.in-project false
 
       - name: Install dependencies
         run: |
