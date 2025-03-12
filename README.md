@@ -1,4 +1,4 @@
-Poetry:
+Poetry: 
 
 Dependency management and packaging:
 poetry is a tool for dependency management and packaging in Python.
