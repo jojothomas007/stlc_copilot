@@ -27,10 +27,10 @@ jobs:
       - name: Set up Poetry
         uses: snok/install-poetry@v1.4.1
         with:
-          version: 2.1.1 # Or your preferred version
+          version: 1.8.5 # Or your preferred version
 
       - name: Configure Poetry
-        run: poetry config virtualenvs.in-project false
+        run: poetry config virtualenvs.in-project true
 
       - name: Install dependencies
         run: |
