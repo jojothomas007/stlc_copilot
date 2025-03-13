@@ -23,7 +23,7 @@ async def shutdown_event():
 
 @app.get("/")
 def isAlive():
-    JiraDataTransformer().get_feature_file("SCRUM-25")
+    # JiraDataTransformer().get_feature_file("SCRUM-25")
     # payload = json.load(open('src/stlc_copilot/resources/trial.json', 'r'))
     # XrayService().export_cucumber_tests(["SCRUM-261","SCRUM-271"]) 
     return "STLC Copilot is active"

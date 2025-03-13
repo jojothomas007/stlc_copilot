@@ -6,6 +6,7 @@ from src.stlc_copilot.dto.jira_issue_dto import Issue, Project, Parent, IssueTyp
 from src.stlc_copilot.config import Config
 from src.stlc_copilot.services.jira_service import JiraService
 from src.stlc_copilot.services.xray_service import XrayService
+from src.stlc_copilot.services.gpt_llm_service import GPTService
 from src.stlc_copilot.utils.zip_util import ZipUtil
 
 # Set up logging
@@ -108,5 +109,14 @@ class JiraDataTransformer:
                 issue_key_list.append(issue_link.inwardIssue.key)
         feature_file_zip = XrayService().export_cucumber_tests(issue_key_list)
         files_dict = ZipUtil().unzip(feature_file_zip)
+        files_dict = self.__update_file_name(files_dict)
         return files_dict
     
+    def __update_file_name(self, files_dict:dict) -> dict:
+        new_file_dict = {}
+        for file in files_dict:
+            file_content = files_dict.get(file)            
+            filename:str = GPTService().generate_filename_from_content(file_content.decode('utf-8'))
+            new_file_dict[filename] = file_content
+        return new_file_dict
+

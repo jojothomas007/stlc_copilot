@@ -56,3 +56,8 @@ class GPTService:
     def get_json_corrected(self, json_str:str, json_schema:json):
         # formatting with schema to be added later
         return self.generate_text(json_str, "Can you correct the format of the json input? If truncated, correct it by removing last element.")
+    
+    def generate_filename_from_content(self, file_content, length:int=40):
+        system_prompt:str = f"Generate feature file name from the provided BDD scenario details in the format <filename>.feature specifically. The filename length should be between 10 and {length}. The filename should not have spaces; use _ instead. The response must not contain anything other than the filename."
+        return self.generate_text(file_content, system_prompt)
+
