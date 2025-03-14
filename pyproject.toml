@@ -12,7 +12,7 @@ fastapi = "^0.115.11"
 uvicorn = "^0.34.0"
 pypdf = "^5.3.1"
 python-docx = "^1.1.2"
-pywin32 = "^309"
+pywin32 = ">=300,<310"
 
 [build-system]
 requires = ["poetry-core"]
