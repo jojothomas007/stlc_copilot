@@ -1,7 +1,7 @@
 import os
 from docx import Document
-import pythoncom
-import win32com.client as win32
+# import pythoncom
+# import win32com.client as win32
 import logging
 from io import BytesIO
 import pypdf
@@ -19,8 +19,8 @@ class ContentManager:
             return self.extract_from_text_bytes(content_bytes)
         elif content_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document": # MS Word Docx format
             return self.extract_from_docx_bytes(content_bytes)
-        elif content_type == "application/msword": # MS Word .Doc format
-            return self.extract_from_doc_bytes(content_bytes)
+        # elif content_type == "application/msword": # MS Word .Doc format
+        #     return self.extract_from_doc_bytes(content_bytes)
         else:
             logger.warning("The content type %s is not supported. And hence data not extracted", content_type)
             return " "
@@ -60,27 +60,27 @@ class ContentManager:
         byte_stream.close()    
         return extracted_text
 
-    # Extracting from old MS Word .Doc format
-    def extract_from_doc_bytes(self, doc_bytes):
-        # Create a temporary file to save the byte content
-        temp_file = 'temp.doc'
-        temp_path = os.path.join(os.getcwd(), temp_file)
-        with open(temp_file, 'wb') as f:
-            f.write(doc_bytes)
+    # # Extracting from old MS Word .Doc format
+    # def extract_from_doc_bytes(self, doc_bytes):
+    #     # Create a temporary file to save the byte content
+    #     temp_file = 'temp.doc'
+    #     temp_path = os.path.join(os.getcwd(), temp_file)
+    #     with open(temp_file, 'wb') as f:
+    #         f.write(doc_bytes)
         
-        # Initialize COM interface for Word application
-        pythoncom.CoInitialize()
-        word = win32.Dispatch("Word.Application")
-        word.Visible = False
+    #     # Initialize COM interface for Word application
+    #     pythoncom.CoInitialize()
+    #     word = win32.Dispatch("Word.Application")
+    #     word.Visible = False
         
-        # Open the temporary file
-        doc = word.Documents.Open(temp_path)
+    #     # Open the temporary file
+    #     doc = word.Documents.Open(temp_path)
         
-        # Extract text from the document
-        extracted_text = doc.Content.Text
+    #     # Extract text from the document
+    #     extracted_text = doc.Content.Text
         
-        # Close the document and quit Word application
-        doc.Close(False)
-        word.Quit()
+    #     # Close the document and quit Word application
+    #     doc.Close(False)
+    #     word.Quit()
         
-        return extracted_text
+    #     return extracted_text
