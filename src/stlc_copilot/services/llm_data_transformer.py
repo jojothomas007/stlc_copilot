@@ -33,6 +33,6 @@ class LLMDataTransformer:
         confluence_contents:str = self.jira_data_transformer.get_confluence_page_contents(user_story.key)
         attachments_contents:str = self.jira_data_transformer.get_attachment_contents(user_story.key)
         user_prompt:str = f"User Story Summary: {user_story.fields.summary};User Story Description: {user_story.fields.description}; Other related contents:{confluence_contents} {attachments_contents}"
-        expected_json_format:json = {"feature": "Feature name and details", "scenarios": [{"scenario": "Scenario details"}]}
-        system_prompt:str = f"Generate a feature file in Gherkins format executed in Cucumber Test Framework for the below user story. Generated Output must be in the json format : {expected_json_format}"
+        expected_json_format:json = {"feature": "Feature name and details", "scenarios": [{"scenario": "<complete executable cucumber scenario in plain text with newline and intendation. do not add additional json nodes>"}]}
+        system_prompt:str = f"Generate a feature file in Gherkins format executed in Cucumber Test Framework for the below user story. Generated Output must be in the json format : {expected_json_format}."
         return self.llm_service.generate_text(user_prompt, system_prompt)
