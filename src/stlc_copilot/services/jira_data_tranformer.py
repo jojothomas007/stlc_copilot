@@ -88,14 +88,14 @@ class JiraDataTransformer:
     
     def get_issue_bulk_dto_bdd(self, json_scenarios, epic_id) -> BulkIssues:
         issue_dto_list = []
-        for json_scenario in json_scenarios["scenarios"]:
+        for json_scenario in json_scenarios:
             project = Project(id=None, key=self.project_key)
             parent = Parent(id=epic_id)
             issue_type = IssueType(id=self.test_issue_type_id, name=None)
             fields = Fields(
                 project=project, 
-                summary=f"{json_scenario["scenario"]}".split("\n")[0],
-                description=json_scenario["scenario"],
+                summary=json_scenario["scenario"],
+                description=json_scenario["steps"],
                 issuetype=issue_type,
                 parent=parent,
                 attachment=[],

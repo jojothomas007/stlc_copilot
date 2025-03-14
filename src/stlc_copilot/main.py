@@ -48,9 +48,11 @@ async def read_item(webhook:WebhookIssue):
         logger.error(f"Unsupported event type : {webhook_event}")
     logger.info(f"Webhook processed for {issue_type} : {issue_key}")
     # Return a response to Jira
-    return {"message": f"Webhook processed successfully for {issue_type} : {issue_key}"}
+    return {"message": f"Webhook processing completed for {issue_type} : {issue_key}"}
 
 
-@app.get("/read_items")
-def read_items(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+@app.post("/jira_issues/{issue_key}")
+async def read_item(issue_key:str):
+    issue:Issue = JiraService().get_issue(issue_key)
+    EventRouterService().route_event(issue)
+    return {"message": f"Issue '{issue_key}' processing completed."}

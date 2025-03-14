@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 from dotenv import load_dotenv
 import os
 
@@ -26,3 +28,7 @@ class Config:
     github_target_path: str = os.environ["github_target_path"]
     github_base_branch: str = os.environ["github_base_branch"]
 
+
+    # Construct the path relative to the project root
+    __json_path = Path(__file__).resolve().parent / 'resources' / 'prompt.json'
+    prompts:json = json.load(open(__json_path, 'r'))
