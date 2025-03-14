@@ -10,8 +10,9 @@ packages = [{include = "stlc_copilot", from = "src"}]
 python = "^3.12"
 fastapi = "^0.115.11"
 uvicorn = "^0.34.0"
-requests = "^2.32.3"
-python-dotenv = "^1.0.1"
+pypdf = "^5.3.1"
+python-docx = "^1.1.2"
+pywin32 = "^309"
 
 [build-system]
 requires = ["poetry-core"]

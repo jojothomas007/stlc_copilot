@@ -35,6 +35,11 @@ class IssueLink(BaseModel):
     outwardIssue: Optional[IssueToLink] = None
     type: IssueLinkType
 
+class Attachment(BaseModel):
+    id: str
+    filename: str
+    content: str
+
 class Fields(BaseModel):
     project: Project
     summary: str
@@ -42,7 +47,8 @@ class Fields(BaseModel):
     issuetype: IssueType
     parent: Optional[Parent] = None  # Parent is now optional
     creator: Optional[Creator] = None
-    issuelinks:Optional[List[IssueLink]] = None
+    issuelinks: Optional[List[IssueLink]] = None
+    attachment: List[Attachment]
 
 class Issue(BaseModel):
     id: str
