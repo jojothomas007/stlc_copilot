@@ -2,10 +2,15 @@ from typing import Union
 from fastapi import FastAPI, Request
 import json
 import logging
+from src.stlc_copilot.dto.confluence_page_content_dto import ConfluencePageContent
+from src.stlc_copilot.dto.confluence_remote_link_dto import RemoteLinkList
+from src.stlc_copilot.dto.jira_issue_dto import Issue
 from src.stlc_copilot.services.xray_service import XrayService
 from src.stlc_copilot.dto.webhook_dto import WebhookIssue
 from src.stlc_copilot.services.event_router import EventRouterService
-from src.stlc_copilot.services.jira_data_tranformer import JiraDataTransformer
+from src.stlc_copilot.services.jira_service import JiraService
+from src.stlc_copilot.services.confluence_service import ConfluenceService
+from src.stlc_copilot.utils.request_sender import RequestSender
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -23,10 +28,11 @@ async def shutdown_event():
 
 @app.get("/")
 def isAlive():
+    content= "STLC Copilot is active"
     # JiraDataTransformer().get_feature_file("SCRUM-25")
     # payload = json.load(open('src/stlc_copilot/resources/trial.json', 'r'))
     # XrayService().export_cucumber_tests(["SCRUM-261","SCRUM-271"]) 
-    return "STLC Copilot is active"
+    return content
 
 @app.post("/webhook")
 async def read_item(webhook:WebhookIssue):

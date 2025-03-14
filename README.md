@@ -17,6 +17,10 @@ JIRA API
 ********
 https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issue-links/#api-rest-api-3-issuelink-post
 
+Confluence API
+**************
+https://docs.atlassian.com/ConfluenceServer/rest/7.19.16/#api/content-getContent
+
 XRAY API
 ********
 https://docs.getxray.app/display/XRAYCLOUD/Exporting+Cucumber+Tests+-+REST+v2

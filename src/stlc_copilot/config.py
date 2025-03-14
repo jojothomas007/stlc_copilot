@@ -7,6 +7,7 @@ class Config:
     gpt_api_url: str = os.environ["gpt_api_url"]
     gpt_api_key: str = os.environ["gpt_api_key"]
     gpt_model: str = os.environ["gpt_model"]
+    confluence_api_url: str = os.environ["confluence_api_url"]
     jira_api_url: str = os.environ["jira_api_url"]
     jira_api_username: str = os.environ["jira_api_username"]
     jira_api_token: str = os.environ["jira_api_token"]

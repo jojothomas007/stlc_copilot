@@ -8,6 +8,7 @@ from src.stlc_copilot.dto.jira_issue_dto import Issue, IssueLink, IssueLinkType,
 from src.stlc_copilot.services.jira_service import JiraService
 from src.stlc_copilot.services.json_fixer import JsonFixerService
 from src.stlc_copilot.services.jira_data_tranformer import JiraDataTransformer
+from src.stlc_copilot.services.llm_data_transformer import LLMDataTransformer
 from src.stlc_copilot.services.gpt_llm_service import GPTService
 from src.stlc_copilot.services.github_service import GithubService
 
@@ -21,6 +22,7 @@ class EventRouterService:
         self.llm_service = GPTService()
         self.json_fixer_service = JsonFixerService(self.jira_service, self.llm_service)
         self.jira_data_transformer = JiraDataTransformer()
+        self.llm_data_transformer = LLMDataTransformer()
         self.github_service = GithubService()
     
     def route_event(self, issue: Issue):
@@ -36,18 +38,16 @@ class EventRouterService:
 
     def __handle_epic_update(self, issue: Issue):
             epic_id = issue.id
-            epic_summary = issue.fields.summary
-            epic_description = issue.fields.description
             user_stories_payloads = None
             try:
-                llm_output = self.llm_service.generate_user_stories(f"epicSummary:{epic_summary};epicDescription:{epic_description}")
+                llm_output = self.llm_data_transformer.generate_user_stories(issue)
                 logger.info("LLM Generated raw output: %s", llm_output)
                 json_user_stories = self.json_fixer_service.fix_json_format(llm_output)
-                user_stories_payloads = self.jira_data_transformer.format_user_stories(json_user_stories, epic_id)
+                bulk_issues_dto:BulkIssues = self.jira_data_transformer.format_user_stories(json_user_stories, epic_id)
             except Exception as e:
                 logger.error(e)
                 return
-            self.jira_service.create_issues_bulk(user_stories_payloads)
+            self.jira_service.create_issues_bulk(bulk_issues_dto)
 
     def __handle_user_story_update(self, issue: Issue):
             try:
@@ -55,21 +55,21 @@ class EventRouterService:
                 user_story_summary = issue.fields.summary
                 user_story_description = issue.fields.description
                 if "bdd" == Config.test_generation_type:
-                    llm_output = self.llm_service.generate_test_scenarios_bdd(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
+                    llm_output = self.llm_data_transformer.generate_test_scenarios_bdd(issue)
                     logger.info(f"LLM Generated raw output: {llm_output}")
                     json_tests = self.json_fixer_service.fix_json_format(llm_output)
                     logger.info(f"Fixed json: {json_tests}")
                     # Assuming format_basic_testcases method
                     bulk_issues_dto:BulkIssues = self.jira_data_transformer.get_issue_bulk_dto_bdd(json_tests, epic_id)
                 else:
-                    llm_output = self.llm_service.generate_test_scenarios_basic(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
+                    llm_output = self.llm_data_transformer.generate_test_scenarios_basic(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
                     logger.info(f"LLM Generated raw output: {llm_output}")
                     json_tests = self.json_fixer_service.fix_json_format(llm_output)
                     logger.info(f"Fixed json: {json_tests}")
                     # Assuming format_basic_testcases method
                     bulk_issues_dto:BulkIssues = self.jira_data_transformer.get_issue_bulk_dto_basic(json_tests, epic_id)                
                 response = self.jira_service.create_issues_bulk(bulk_issues_dto)
-                self.__link_tests_to_userstory(response["issues"], issue.key)
+                self.__link_tests_to_userstory(json.loads(response.content)["issues"], issue.key)
             except Exception as err:
                 logger.error(f"An unexpected error occurred: {err}")
             return None           
@@ -85,9 +85,6 @@ class EventRouterService:
     
     def __handle_test_update(self, issue: Issue):
             try:
-                epic_id = issue.fields.parent.id
-                test_summary = issue.fields.summary
-                test_description = issue.fields.description
                 test_type:str = Config.test_generation_type
                 if "bdd" == test_type:
                     linked_userstory_key = self.jira_data_transformer.get_linked_userstory_key(issue)
