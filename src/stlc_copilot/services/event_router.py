@@ -35,6 +35,7 @@ class EventRouterService:
                 self.__handle_test_update(issue)
             else:
                 logger.error(f"Unsupported issue type: {issue_type}")
+            self.jira_service.remove_label(issue.key, "Automate")
 
     def __handle_epic_update(self, issue: Issue):
             epic_id = issue.id
