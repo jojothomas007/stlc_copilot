@@ -154,4 +154,5 @@ class JiraDataTransformer:
         for attachment in issue.fields.attachment :
             response = jira_service.get_attachment_content(attachment.id)
             content += ContentManager().extract_from_bytes(response.headers.get("Content-Type"), response.content) + "\n"
+        return content
 

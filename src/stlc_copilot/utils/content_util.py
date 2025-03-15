@@ -13,17 +13,19 @@ logging.basicConfig(level=logging.INFO)
 class ContentManager:
         
     def extract_from_bytes(self, content_type:str, content_bytes):
+        content:str = " "
         if content_type == "application/pdf":
-            return self.extract_from_pdf_bytes(content_bytes)
+            content =  self.extract_from_pdf_bytes(content_bytes)
         elif content_type == "text/plain":
-            return self.extract_from_text_bytes(content_bytes)
+            content =  self.extract_from_text_bytes(content_bytes)
         elif content_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document": # MS Word Docx format
-            return self.extract_from_docx_bytes(content_bytes)
+            content =  self.extract_from_docx_bytes(content_bytes)
         # elif content_type == "application/msword": # MS Word .Doc format
         #     return self.extract_from_doc_bytes(content_bytes)
         else:
             logger.warning("The content type %s is not supported. And hence data not extracted", content_type)
-            return " "
+            content =  " "
+        return content
 
     def extract_from_pdf_bytes(self, pdf_bytes):
         # Create a BytesIO object from the bytes content

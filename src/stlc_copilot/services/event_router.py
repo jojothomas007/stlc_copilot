@@ -39,7 +39,6 @@ class EventRouterService:
 
     def __handle_epic_update(self, issue: Issue):
             epic_id = issue.id
-            user_stories_payloads = None
             try:
                 llm_output = self.llm_data_transformer.generate_user_stories(issue)
                 logger.info("LLM Generated raw output: %s", llm_output)
