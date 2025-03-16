@@ -25,6 +25,7 @@ https://docs.atlassian.com/ConfluenceServer/rest/7.19.16/#api/content-getContent
 
 XRAY API
 ********
+https://docs.getxray.app/display/XRAYCLOUD/Importing+Tests+-+REST+v2
 https://docs.getxray.app/display/XRAYCLOUD/Exporting+Cucumber+Tests+-+REST+v2
 
 Get XRAY API credentials
