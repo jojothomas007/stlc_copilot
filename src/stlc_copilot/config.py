@@ -23,11 +23,12 @@ class Config:
     xray_client_id: str = os.environ["xray_client_id"]
     xray_client_secret: str = os.environ["xray_client_secret"]
     xray_token: str = os.environ["xray_token"]
+    xray_test_sets: str = os.environ["xray_test_sets"]
     github_api_url: str = os.environ["github_api_url"]
     github_token: str = os.environ["github_token"]
-    github_target_path: str = os.environ["github_target_path"]
     github_base_branch: str = os.environ["github_base_branch"]
-
+    github_feature_path: str = os.environ["github_feature_path"]
+    github_stepdef_path: str = os.environ["github_stepdef_path"]
 
     # # Construct the path relative to the project root
     # __json_path = Path(__file__).resolve().parent / 'resources' / 'prompt.json'
