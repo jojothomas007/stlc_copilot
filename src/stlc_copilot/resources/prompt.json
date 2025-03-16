@@ -1,0 +1,4 @@
+{
+    "userstory_desc_format" : "As a [user role], \n I want [goal/desire],\n so that [benefit/value]. \n Acceptance Criterias: <list out the criterias> \n Additional information, constraints, or dependencies. Define the boundaries of the story and provide clear guidelines for testing. Use bullet points for clarity.",
+    "testcase_desc_format" : " Include Preconditions if any. Detailed Test Steps in table format with columns Step number, Step and Expected Result. Include Postconditions if any."
+}

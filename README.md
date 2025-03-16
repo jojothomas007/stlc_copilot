@@ -1,3 +1,5 @@
+**STLC Assistant**
+
 Poetry:
 
 Dependency management and packaging:

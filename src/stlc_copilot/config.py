@@ -1,3 +1,5 @@
+import json
+from pathlib import Path
 from dotenv import load_dotenv
 import os
 
@@ -26,3 +28,14 @@ class Config:
     github_target_path: str = os.environ["github_target_path"]
     github_base_branch: str = os.environ["github_base_branch"]
 
+
+    # # Construct the path relative to the project root
+    # __json_path = Path(__file__).resolve().parent / 'resources' / 'prompt.json'
+    # prompts:json = json.load(open(__json_path, 'r'))
+    prompts:json = {
+        "userstory_desc_format" : "As a [user role], \n I want [goal/desire],\n so that [benefit/value]. \n Acceptance Criterias: <list out the criterias> " +
+        "\n Additional information, constraints, or dependencies. Define the boundaries of the story and provide clear guidelines for testing. " +
+        "Use bullet points for clarity. Use proper jira description formatting ",
+        "testcase_desc_format" : " Include Preconditions if any. Detailed Test Steps in table format with columns Step number, Step and Expected Result. " +
+        "Include Postconditions if any."
+    }
