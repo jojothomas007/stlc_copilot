@@ -1,6 +1,8 @@
 import re
 import logging
 import json
+from src.stlc_copilot.dto.xray_test_dto import BulkXrayTests
+from src.stlc_copilot.services.xray_service import XrayService
 from src.stlc_copilot.dto.jira_user_dto import User
 from src.stlc_copilot.dto.github_branch_dto import Branch
 from src.stlc_copilot.config import Config
@@ -24,7 +26,7 @@ class EventRouterService:
         self.jira_data_transformer = JiraDataTransformer()
         self.llm_data_transformer = LLMDataTransformer()
         self.github_service = GithubService()
-    
+            
     def route_event(self, issue: Issue):
             issue_type = issue.fields.issuetype.id
             if issue_type == Config.jira_epic_issuetypeid:
@@ -60,7 +62,11 @@ class EventRouterService:
                     json_tests = self.json_fixer_service.fix_json_format(llm_output)
                     logger.info(f"Fixed json: {json_tests}")
                     # Assuming format_basic_testcases method
-                    bulk_issues_dto:BulkIssues = self.jira_data_transformer.get_issue_bulk_dto_bdd(json_tests, epic_id)
+                    bulk_tests_dto:BulkXrayTests = self.jira_data_transformer.get_issue_bulk_dto_bdd(json_tests, epic_id)
+                    xray_service = XrayService()
+                    response = xray_service.create_tests_bulk(bulk_tests_dto)
+                    response = xray_service.get_create_tests_bulk_status(json.loads(response.content)["jobId"])
+                    self.__link_tests_to_userstory(json.loads(response.content)["result"]["issues"], issue.key)
                 else:
                     llm_output = self.llm_data_transformer.generate_test_scenarios_basic(f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}")
                     logger.info(f"LLM Generated raw output: {llm_output}")
@@ -68,8 +74,8 @@ class EventRouterService:
                     logger.info(f"Fixed json: {json_tests}")
                     # Assuming format_basic_testcases method
                     bulk_issues_dto:BulkIssues = self.jira_data_transformer.get_issue_bulk_dto_basic(json_tests, epic_id)                
-                response = self.jira_service.create_issues_bulk(bulk_issues_dto)
-                self.__link_tests_to_userstory(json.loads(response.content)["issues"], issue.key)
+                    response = self.jira_service.create_issues_bulk(bulk_issues_dto)
+                    self.__link_tests_to_userstory(json.loads(response.content)["issues"], issue.key)
             except Exception as err:
                 logger.error(f"An unexpected error occurred: {err}")
             return None           
@@ -95,7 +101,7 @@ class EventRouterService:
                     jira_user:User = self.jira_service.get_current_user()
                     for file in files_dict:
                         self.github_service.create_update_file_contents(
-                            f"{Config.github_target_path}/{file}", 
+                            f"{Config.github_feature_path}/{file}", 
                             branch_name, 
                             files_dict[file], 
                             f"feature file added for {linked_userstory_key}",
@@ -106,7 +112,7 @@ class EventRouterService:
                         logger.info(f"LLM Generated step definitions : {step_definitions}")
                         step_definitions_filename = self.__get_filename_from_step_definition(step_definitions)
                         self.github_service.create_update_file_contents(
-                            f"{Config.github_target_path}/{step_definitions_filename}", 
+                            f"{Config.github_stepdef_path}/{step_definitions_filename}", 
                             branch_name, 
                             step_definitions.replace("'''", "").encode('utf-8'), 
                             f"step_definitions file added for feature {file}",

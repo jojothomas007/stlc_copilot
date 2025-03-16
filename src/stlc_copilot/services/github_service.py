@@ -1,7 +1,6 @@
 import base64
 import json
 import logging
-# from src.stlc_copilot.dto.github_user_dto import User
 from src.stlc_copilot.dto.github_branch_dto import Branch
 from src.stlc_copilot.config import Config
 from src.stlc_copilot.utils.request_sender import RequestSender
@@ -15,8 +14,6 @@ class GithubService:
         self.request_sender:RequestSender = RequestSender()
         self.github_api_url = Config.github_api_url
         self.github_token = Config.github_token
-        self.github_target_path = Config.github_target_path
-        self.github_base_branch = Config.github_base_branch
         self.headers:json = {
             "User-Agent": "stlc_copilot",
             "Accept": "application/vnd.github+json",

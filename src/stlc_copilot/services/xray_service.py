@@ -1,3 +1,4 @@
+import time
 import json
 import os
 import logging
@@ -5,6 +6,7 @@ import base64
 from typing import List
 import requests
 from requests.auth import HTTPBasicAuth
+from src.stlc_copilot.dto.xray_test_dto import BulkXrayTests
 from src.stlc_copilot.config import Config
 from src.stlc_copilot.utils.request_sender import RequestSender
 from requests.exceptions import HTTPError, RequestException
@@ -48,3 +50,29 @@ class XrayService:
         request_url = f"{self.xray_api_url}/export/cucumber?keys={story_keys}"
         response = self.request_sender.get_request(request_url, self.headers, None)
         return response.content
+    
+    def create_tests_bulk(self, payload:BulkXrayTests) -> requests.Response:
+        self.__authenticate_xray()
+        request_url = f"{self.xray_api_url}/import/test/bulk"
+        payload = payload.model_dump_json(exclude_none=True)
+        response = self.request_sender.post_request(request_url, self.headers, payload, None)
+        return response
+    
+    def get_create_tests_bulk_status(self, jobId:str) -> requests.Response:
+        self.__authenticate_xray()
+        response = None
+        status = ""
+        attempts = 0
+        max_attempts = 5
+        poll_interval = 10
+        while(status != "successful" and attempts < max_attempts):
+            try:
+                request_url = f"{self.xray_api_url}/import/test/bulk/{jobId}/status"
+                response = self.request_sender.get_request(request_url, self.headers, None)
+                status = json.loads(response.content)["status"]
+            except Exception as err:
+                logger.error(f"An unexpected error occurred; retrying. Error: {err}")
+                status = ""
+            attempts += 1
+            time.sleep(poll_interval)
+        return response

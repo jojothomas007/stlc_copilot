@@ -3,6 +3,7 @@ import logging
 from typing import List
 from src.stlc_copilot.utils.content_util import ContentManager
 from src.stlc_copilot.dto.confluence_page_content_dto import ConfluencePageContent
+from src.stlc_copilot.dto.xray_test_dto import XrayTest, BulkXrayTests
 from src.stlc_copilot.dto.confluence_remote_link_dto import RemoteLinkList
 from src.stlc_copilot.services.confluence_service import ConfluenceService
 from src.stlc_copilot.dto.jira_issue_dto import Issue, Project, Parent, IssueType, Fields, BulkIssues, BulkIssueFields
@@ -86,7 +87,7 @@ class JiraDataTransformer:
             issue_dto_list.append(bulk_issue_fields)
         return BulkIssues(issueUpdates=issue_dto_list)
     
-    def get_issue_bulk_dto_bdd(self, json_scenarios, epic_id) -> BulkIssues:
+    def get_issue_bulk_dto_bdd(self, json_scenarios, epic_id) -> BulkXrayTests:
         issue_dto_list = []
         for json_scenario in json_scenarios:
             project = Project(id=None, key=self.project_key)
@@ -95,16 +96,21 @@ class JiraDataTransformer:
             fields = Fields(
                 project=project, 
                 summary=json_scenario["scenario"],
-                description=json_scenario["steps"],
+                description=json_scenario["scenario"],
                 issuetype=issue_type,
                 parent=parent,
                 attachment=[],
                 creator=None,
                 issuelinks=None
             )
-            bulk_issue_fields = BulkIssueFields(fields=fields)
-            issue_dto_list.append(bulk_issue_fields)
-        return BulkIssues(issueUpdates=issue_dto_list)
+            xray_test = XrayTest(
+                fields=fields,
+                testtype = "Cucumber",
+                gherkin_def = json_scenario["steps"],
+                xray_test_sets = Config.xray_test_sets.split(",")
+            )
+            issue_dto_list.append(xray_test)
+        return BulkXrayTests(issue_dto_list)
     
     def get_linked_userstory_key(self, issue:Issue):
         for issue_link in issue.fields.issuelinks:
