@@ -11,9 +11,10 @@ from src.stlc_copilot.services.event_router import EventRouterService
 from src.stlc_copilot.services.jira_service import JiraService
 from src.stlc_copilot.services.confluence_service import ConfluenceService
 from src.stlc_copilot.utils.request_sender import RequestSender
+import sys
 
 # Set up logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
@@ -28,6 +29,7 @@ async def shutdown_event():
 
 @app.get("/")
 def isAlive():
+    logger.info("Received request for alive")
     content= "STLC Copilot is active"
     # JiraDataTransformer().get_feature_file("SCRUM-25")
     # payload = json.load(open('src/stlc_copilot/resources/trial.json', 'r'))

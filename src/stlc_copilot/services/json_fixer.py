@@ -3,10 +3,11 @@ import json
 from json import JSONDecodeError
 from src.stlc_copilot.services.gpt_llm_service import GPTService
 from src.stlc_copilot.services.jira_service import JiraService
+import sys
 
 # Set up logging
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 class JsonFixerService:
     def __init__(self, jira_service:JiraService, llm_service:GPTService):

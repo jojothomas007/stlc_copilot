@@ -12,10 +12,11 @@ from src.stlc_copilot.services.jira_service import JiraService
 from src.stlc_copilot.services.xray_service import XrayService
 from src.stlc_copilot.services.gpt_llm_service import GPTService
 from src.stlc_copilot.utils.zip_util import ZipUtil
+import sys
 
 # Set up logging
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 class JiraDataTransformer:
     def __init__(self):

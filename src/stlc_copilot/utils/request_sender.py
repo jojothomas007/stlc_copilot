@@ -1,11 +1,12 @@
+import sys
 import json
 import logging
 import requests
 from requests.exceptions import HTTPError, RequestException
 
 # Set up logging
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 class RequestSender:
 

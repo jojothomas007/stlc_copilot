@@ -4,10 +4,11 @@ import logging
 from src.stlc_copilot.dto.github_branch_dto import Branch
 from src.stlc_copilot.config import Config
 from src.stlc_copilot.utils.request_sender import RequestSender
+import sys
 
 # Set up logging
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 class GithubService:
     def __init__(self):

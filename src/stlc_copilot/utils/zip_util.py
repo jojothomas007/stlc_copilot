@@ -1,10 +1,11 @@
 import logging
 import zipfile
 import io
+import sys
 
 # Set up logging
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 class ZipUtil:
 

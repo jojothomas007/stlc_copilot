@@ -5,10 +5,11 @@ from docx import Document
 import logging
 from io import BytesIO
 import pypdf
+import sys
 
 # Set up logging
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 class ContentManager:
         

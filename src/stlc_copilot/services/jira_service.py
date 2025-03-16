@@ -8,10 +8,11 @@ from src.stlc_copilot.dto.jira_user_dto import User
 from src.stlc_copilot.dto.jira_issue_dto import BulkIssues, Issue, IssueLink
 from src.stlc_copilot.config import Config
 from src.stlc_copilot.utils.request_sender import RequestSender
+import sys
 
 # Set up logging
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 class JiraService:
     def __init__(self):

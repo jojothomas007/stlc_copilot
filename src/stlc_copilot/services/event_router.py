@@ -13,9 +13,10 @@ from src.stlc_copilot.services.jira_data_tranformer import JiraDataTransformer
 from src.stlc_copilot.services.llm_data_transformer import LLMDataTransformer
 from src.stlc_copilot.services.gpt_llm_service import GPTService
 from src.stlc_copilot.services.github_service import GithubService
+import sys
 
 # Set up logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
 
 class EventRouterService:

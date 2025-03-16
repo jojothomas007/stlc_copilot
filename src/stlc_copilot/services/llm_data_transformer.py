@@ -5,10 +5,11 @@ from src.stlc_copilot.dto.jira_issue_dto import Issue
 from src.stlc_copilot.services.gpt_llm_service import GPTService
 from src.stlc_copilot.services.jira_data_tranformer import JiraDataTransformer
 from src.stlc_copilot.services.search_service import SearchService
+import sys
 
 # Set up logging
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 class LLMDataTransformer:
     def __init__(self):

@@ -4,10 +4,11 @@ import requests
 from pydantic import BaseModel
 from fastapi import Depends
 from src.stlc_copilot.config import Config
+import sys
 
 # Set up logging
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 class GPTService:
     def __init__(self):

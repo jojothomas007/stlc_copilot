@@ -10,10 +10,11 @@ from src.stlc_copilot.dto.xray_test_dto import BulkXrayTests
 from src.stlc_copilot.config import Config
 from src.stlc_copilot.utils.request_sender import RequestSender
 from requests.exceptions import HTTPError, RequestException
+import sys
 
 # Set up logging
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
 logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 class XrayService:
     def __init__(self):
