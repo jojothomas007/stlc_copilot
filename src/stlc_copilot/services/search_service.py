@@ -20,7 +20,7 @@ class SearchService:
 
     def __init__(self):
         self.__openai:openai = openai
-        self.__openai.api_key = Config().gpt_api_key # Ensure API key is set as an environment variable
+        self.__openai.api_key = Config.gpt_api_key # Ensure API key is set as an environment variable
         self.__embedding_model = "text-embedding-ada-002"
         
     def __chunk_text(self, text, chunk_size=512, overlap=100):

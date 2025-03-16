@@ -56,13 +56,14 @@ class GithubService:
         response = self.request_sender.get_request(request_url, self.headers)
         Branch.model_validate_json(response.text)
   
-    def create_pull_request(self, branch_name:str, base_branch_name:str, pull_req_title:str, pull_req_description:str):
+    def create_pull_request(self, branch_name:str, base_branch_name:str, pull_req_title:str, pull_req_description:str, draft:bool):
         request_url = f"{self.github_api_url}/pulls"
         payload:json = {
             "title":pull_req_title,
             "body":pull_req_description,
             "head":branch_name,
-            "base":base_branch_name
+            "base":base_branch_name,
+            "draft": draft
         }
         response = self.request_sender.post_request(request_url, self.headers, json.dumps(payload))
         return response

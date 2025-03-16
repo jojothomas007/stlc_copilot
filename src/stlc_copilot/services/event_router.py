@@ -1,5 +1,5 @@
+import re
 import logging
-
 import json
 from src.stlc_copilot.dto.jira_user_dto import User
 from src.stlc_copilot.dto.github_branch_dto import Branch
@@ -102,14 +102,36 @@ class EventRouterService:
                             jira_user.displayName,
                             jira_user.emailAddress
                         )
+                        step_definitions = self.llm_data_transformer.generate_bdd_step_definitions(files_dict[file].decode('utf-8'))
+                        logger.info(f"LLM Generated step definitions : {step_definitions}")
+                        step_definitions_filename = self.__get_filename_from_step_definition(step_definitions)
+                        self.github_service.create_update_file_contents(
+                            f"{Config.github_target_path}/{step_definitions_filename}", 
+                            branch_name, 
+                            step_definitions.replace("'''", "").encode('utf-8'), 
+                            f"step_definitions file added for feature {file}",
+                            jira_user.displayName,
+                            jira_user.emailAddress
+                        )
                     self.github_service.create_pull_request(
                         branch_name,
                         Config.github_base_branch,
                         f"feature file for {linked_userstory_key}",
-                        f"feature file for {linked_userstory_key}"
+                        f"feature file for {linked_userstory_key}",
+                        draft=True
                     )
                 else:
                     logger.warning(f"Code generation not supported for tests type: {test_type}")             
             except Exception as err:
                 logger.error(f"An unexpected error occurred: {err}")
             return None
+    
+    def __get_filename_from_step_definition(self, java_code:str):
+        match = re.search(r"public class (\w+)", java_code)
+        if match:
+            class_name = match.group(1)
+            # Convert the class name into a filename with a .java extension
+            filename = f"{class_name}.java"
+            return filename
+        else:
+            raise ValueError("Could not find a class name in the provided Java code.")
