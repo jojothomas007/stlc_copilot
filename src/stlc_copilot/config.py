@@ -18,7 +18,8 @@ class Config:
     jira_story_issuetypeid: int = os.environ["jira_story_issuetypeid"]
     jira_test_issuetypeid: int = os.environ["jira_test_issuetypeid"]
     jira_test_linktype_name: int = os.environ["jira_test_linktype_name"]
-    test_generation_type: int = os.environ["test_generation_type"]
+    test_generation_type: str = os.environ["test_generation_type"]
+    code_generation_type: str = os.environ["code_generation_type"]
     xray_api_url: str = os.environ["xray_api_url"]
     xray_client_id: str = os.environ["xray_client_id"]
     xray_client_secret: str = os.environ["xray_client_secret"]
@@ -29,7 +30,11 @@ class Config:
     github_base_branch: str = os.environ["github_base_branch"]
     github_feature_path: str = os.environ["github_feature_path"]
     github_stepdef_path: str = os.environ["github_stepdef_path"]
-
+    github_playwright_test_path: str = os.environ["github_playwright_test_path"]
+    zephyr_api_url: str = os.environ["zephyr_api_url"]
+    zephyr_api_token: str = os.environ["zephyr_api_token"]
+    zephyr_test_folder_path: str = os.environ["zephyr_test_folder_path"]
+    
     # # Construct the path relative to the project root
     # __json_path = Path(__file__).resolve().parent / 'resources' / 'prompt.json'
     # prompts:json = json.load(open(__json_path, 'r'))
@@ -38,5 +43,6 @@ class Config:
         "\n Additional information, constraints, or dependencies. Define the boundaries of the story and provide clear guidelines for testing. " +
         "Use bullet points for clarity. Use proper jira description formatting ",
         "testcase_desc_format" : " Include Preconditions if any. Detailed Test Steps in table format with columns Step number, Step and Expected Result. " +
-        "Include Postconditions if any."
+        "Include Postconditions if any.",
+        "Playwright_test_format" : "Create a playwright test file in Typescript; use test.describe, test and test.step fixtures. Use the details from the below Test details."
     }

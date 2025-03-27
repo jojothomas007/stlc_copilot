@@ -49,7 +49,7 @@ class XrayService:
         self.__authenticate_xray()
         story_keys=';'.join(test_key_list)
         request_url = f"{self.xray_api_url}/export/cucumber?keys={story_keys}"
-        response = self.request_sender.get_request(request_url, self.headers, None)
+        response = self.request_sender.get_request(request_url, self.headers, {})
         return response.content
     
     def create_tests_bulk(self, payload:BulkXrayTests) -> requests.Response:
@@ -69,7 +69,7 @@ class XrayService:
         while(status != "successful" and attempts < max_attempts):
             try:
                 request_url = f"{self.xray_api_url}/import/test/bulk/{jobId}/status"
-                response = self.request_sender.get_request(request_url, self.headers, None)
+                response = self.request_sender.get_request(request_url, self.headers, {})
                 status = json.loads(response.content)["status"]
             except Exception as err:
                 logger.error(f"An unexpected error occurred; retrying. Error: {err}")

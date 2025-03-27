@@ -33,5 +33,5 @@ class ConfluenceService:
 
     def get_page_content(self, page_id:str) -> requests.Response:
         request_url = f"{self.confluence_api_url}/content/{page_id}?expand=body.view"
-        response = self.request_sender.get_request(request_url, self.headers, self.auth)
+        response = self.request_sender.get_request(request_url, self.headers, {}, self.auth)
         return ConfluencePageContent.model_validate_json(response.content)

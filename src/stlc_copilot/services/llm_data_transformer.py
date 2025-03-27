@@ -29,6 +29,17 @@ class LLMDataTransformer:
         system_prompt:str = f"You are a Product owner in a software project. Generate user stories from the jira epic details. Userstory description format : {userstory_desc_format}. Generated Output must be in the json array in the format : {expected_json_format}"
         return self.llm_service.generate_text(user_prompt, system_prompt)
     
+    def generate_test_scenarios_zephyr(self, user_story:Issue):
+        user_story_summary = user_story.fields.summary
+        user_story_description = user_story.fields.description
+        confluence_contents:str = self.jira_data_transformer.get_confluence_page_contents(user_story.key)
+        attachments_contents:str = self.jira_data_transformer.get_attachment_contents(user_story.key)
+        related_contents:str = self.search_service.search_text(f"{confluence_contents}{attachments_contents}", f"{user_story_summary}{user_story_description}")
+        user_prompt:str = f"User Story Summary: {user_story_summary};User Story Description: {user_story_description}; Other related contents:{related_contents}"
+        expected_json_format:json = [{"test_name": "Test case name in less than 80 characters", "steps": [{"step":"<step in plain text>", "test_data":"<test data in plain text>", "expected_result":"<expected_result in plain text>"}]}]
+        system_prompt:str = f"You are a Manual Test Engineer. Generate Testcases with detailed steps from the given User story details with minimum 4 steps. Generated Output must be in the json format : {expected_json_format}."
+        return self.llm_service.generate_text(user_prompt, system_prompt)
+
     def generate_test_scenarios_basic(self, user_story:Issue):
         testcase_desc_format:str = Config.prompts["testcase_desc_format"]
         confluence_contents:str = self.jira_data_transformer.get_confluence_page_contents(user_story.key)
@@ -52,4 +63,9 @@ class LLMDataTransformer:
     def generate_bdd_step_definitions(self, scenarios):
         user_prompt:str = f"BDD gherkins scenario steps: {scenarios}"
         system_prompt:str = f"You are a bdd expert. Generate bdd cucumber java step definition file for the bdd gherkins scenario steps. Do not any other description other than the compilable java file content."
+        return self.llm_service.generate_text(user_prompt, system_prompt)
+    
+    def generate_playwright_scripts(self, testcase_details):
+        user_prompt:str = f"Manual Testcases: {testcase_details}"
+        system_prompt:str = f"You are a Test automation expert in playwright Typescript. Generate automation tests for the manual tests. Do not add any other description other than the compilable Typecscript file content. When generating the scripts use use test.describe, test and test.step fixtures."
         return self.llm_service.generate_text(user_prompt, system_prompt)

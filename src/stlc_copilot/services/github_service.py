@@ -24,7 +24,7 @@ class GithubService:
 
     def get_branch(self, branch_name:str):
         request_url = f"{self.github_api_url}/branches/{branch_name}"
-        return self.request_sender.get_request(request_url, self.headers)
+        return self.request_sender.get_request(request_url, self.headers, {})
   
     def create_branch(self, branch_name:str, sha:str):
         request_url = f"{self.github_api_url}/git/refs"
@@ -51,7 +51,7 @@ class GithubService:
 
     def get_branch(self, branch_name:str) -> Branch:
         request_url = f"{self.github_api_url}/branches/{branch_name}"
-        response = self.request_sender.get_request(request_url, self.headers)
+        response = self.request_sender.get_request(request_url, self.headers, {})
         Branch.model_validate_json(response.text)
   
     def create_pull_request(self, branch_name:str, base_branch_name:str, pull_req_title:str, pull_req_description:str, draft:bool):
@@ -68,6 +68,6 @@ class GithubService:
 
     def get_branch(self, branch_name:str) -> Branch:
         request_url = f"{self.github_api_url}/branches/{branch_name}"
-        response = self.request_sender.get_request(request_url, self.headers)
+        response = self.request_sender.get_request(request_url, self.headers, {})
         return Branch.model_validate_json(response.text)
     

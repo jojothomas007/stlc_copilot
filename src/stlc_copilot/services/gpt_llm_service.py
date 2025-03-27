@@ -51,4 +51,8 @@ class GPTService:
     def generate_filename_from_content(self, file_content, length:int=40):
         system_prompt:str = f"Generate feature file name from the provided BDD scenario details in the format <filename>.feature specifically. The filename length should be between 10 and {length}. The filename should not have spaces; use _ instead. The response must not contain anything other than the filename."
         return self.generate_text(file_content, system_prompt)
+    
+    def generate_filename_for_playwright_script(self, file_content, length:int=20):
+        system_prompt:str = f"Generate file name for the playwright script written in typescript. Generate File name without any extension. The filename length should be between 10 and {length}. The filename should not have spaces; use _ instead. The response must not contain anything other than the filename."
+        return self.generate_text(file_content, system_prompt) + ".ts"
 

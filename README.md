@@ -23,6 +23,11 @@ Confluence API
 **************
 https://docs.atlassian.com/ConfluenceServer/rest/7.19.16/#api/content-getContent
 
+Zephyr Scale
+************
+https://support.smartbear.com/zephyr-scale-cloud/docs/en/rest-api/api-access-tokens-management.html
+https://support.smartbear.com/zephyr-scale-cloud/api-docs
+
 XRAY API
 ********
 https://docs.getxray.app/display/XRAYCLOUD/Importing+Tests+-+REST+v2

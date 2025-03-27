@@ -49,6 +49,7 @@ class Fields(BaseModel):
     creator: Optional[Creator] = None
     issuelinks: Optional[List[IssueLink]] = None
     attachment: List[Attachment]
+    labels: Optional[List[str]] = None
 
 class Issue(BaseModel):
     id: str

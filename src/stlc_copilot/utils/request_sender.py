@@ -25,7 +25,7 @@ class RequestSender:
             logger.info("Response : %s", response.content)
             return response
         except HTTPError as http_err:
-            logger.error(f"HTTP error occurred: {http_err} - {response}")
+            logger.error(f"HTTP error occurred: {http_err} - {response.content}")
         except RequestException as req_err:
             logger.error(f"Request error occurred: {req_err} - {response}")
         except Exception as err:
@@ -47,7 +47,7 @@ class RequestSender:
             logger.info("Response : %s", response.content)
             return response
         except HTTPError as http_err:
-            logger.error(f"HTTP error occurred: {http_err} - {response}")
+            logger.error(f"HTTP error occurred: {http_err} - {response.content}")
         except RequestException as req_err:
             logger.error(f"Request error occurred: {req_err} - {response}")
         except Exception as err:
@@ -69,7 +69,7 @@ class RequestSender:
             logger.info("Response : %s", response.content)
             return response
         except HTTPError as http_err:
-            logger.error(f"HTTP error occurred: {http_err} - {response}")
+            logger.error(f"HTTP error occurred: {http_err} - {response.content}")
         except RequestException as req_err:
             logger.error(f"Request error occurred: {req_err} - {response}")
         except Exception as err:
@@ -91,27 +91,28 @@ class RequestSender:
             logger.info("Response : %s", response.content)
             return response
         except HTTPError as http_err:
-            logger.error(f"HTTP error occurred: {http_err} - {response}")
+            logger.error(f"HTTP error occurred: {http_err} - {response.content}")
         except RequestException as req_err:
             logger.error(f"Request error occurred: {req_err} - {response}")
         except Exception as err:
             logger.error(f"An unexpected error occurred: {err} - {response}")
         return None
     
-    def get_request(self, request_url:str, headers:json, auth=None) -> requests.Response:
+    def get_request(self, request_url:str, headers:json, params:json, auth=None) -> requests.Response:
             logger.info("Request URL: %s", request_url)
             logger.info("Request Headers: %s", headers)
             try:
                 response = requests.get(
                     request_url,
                     headers=headers,
-                    auth=auth
+                    auth=auth,
+                    params=params
                 )
                 response.raise_for_status()
                 logger.info("Response : %s", response.content)
                 return response
             except HTTPError as http_err:
-                logger.error(f"HTTP error occurred: {http_err} - {response}")
+                logger.error(f"HTTP error occurred: {http_err} - {response.content}")
             except RequestException as req_err:
                 logger.error(f"Request error occurred: {req_err} - {response}")
             except Exception as err:

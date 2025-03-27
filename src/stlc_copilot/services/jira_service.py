@@ -36,25 +36,25 @@ class JiraService:
 
     def get_issue(self, issue_id_or_key:str) -> Issue:
         request_url = f"{self.jira_api_url}/issue/{issue_id_or_key}"
-        response = self.request_sender.get_request(request_url, self.headers, self.auth)
+        response = self.request_sender.get_request(request_url, self.headers, {}, self.auth)
         return Issue.model_validate_json(response.text)
 
     def get_current_user(self) -> User:
         request_url = f"{self.jira_api_url}/myself"
-        response = self.request_sender.get_request(request_url, self.headers, self.auth)
+        response = self.request_sender.get_request(request_url, self.headers, {}, self.auth)
         return User.model_validate_json(response.text)
     
     def get_attachment_content(self, attachment_id:str) -> requests.Response:
         request_url = f"{self.jira_api_url}/attachment/content/{attachment_id}"
-        response = self.request_sender.get_request(request_url, self.headers, self.auth)
+        response = self.request_sender.get_request(request_url, self.headers, {}, self.auth)
         return response
 
     def get_remote_link(self, issue_id_or_key:str) -> RemoteLinkList:
         request_url = f"{self.jira_api_url}/issue/{issue_id_or_key}/remotelink"
-        response = self.request_sender.get_request(request_url, self.headers, self.auth)
+        response = self.request_sender.get_request(request_url, self.headers, {}, self.auth)
         return RemoteLinkList.model_validate_json(response.content)
     
-    def remove_label(self, issue_id_or_key:str, label:str) -> RemoteLinkList:
+    def remove_label(self, issue_id_or_key:str, label:str):
         request_url = f"{self.jira_api_url}/issue/{issue_id_or_key}"
         payload = json.dumps( {
             "update": {

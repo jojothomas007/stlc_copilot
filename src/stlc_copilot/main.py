@@ -2,6 +2,7 @@ from typing import Union
 from fastapi import FastAPI, Request
 import json
 import logging
+from src.stlc_copilot.services.zephyr_service import ZephyrService
 from src.stlc_copilot.dto.confluence_page_content_dto import ConfluencePageContent
 from src.stlc_copilot.dto.confluence_remote_link_dto import RemoteLinkList
 from src.stlc_copilot.dto.jira_issue_dto import Issue
